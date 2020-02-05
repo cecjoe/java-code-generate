@@ -1,7 +1,6 @@
 package com.joe.code.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.joe.code.common.enums.BasicControlTypeEnum;
 import com.joe.code.common.tool.*;
 import com.joe.code.common.utils.*;
 import com.joe.code.entity.SysTableField;
@@ -47,17 +46,8 @@ public class CodeGeneratorService {
 
     public String getDaoContent(SysTableInfo sysTableInfo, String packageName){
 
-        String entityName = EntityCodeUtil.getEntityNameByTable(sysTableInfo.getTableName());
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("package ").append(packageName).append(";\r\n").append("\n");
-//        stringBuilder.append("import java.util.Date;").append("\r\n");
-//        stringBuilder.append("import lombok.Data;").append("\r\n").append("\n");
-        stringBuilder.append("@Repository").append("\r\n");
-        stringBuilder.append("public interface ").append(entityName).append("Mapper extends BaseMapper<").append(entityName).append("> {\r\n\n");
-
-        stringBuilder.append("}");
-        return stringBuilder.toString();
+        CodeBack codeBack = new DaoFileTemplate(sysTableInfo.getTableName(), packageName);
+        return codeBack.getContent();
     }
 
     public String getDaoXmlContent(SysTableInfo sysTableInfo, String packageName){

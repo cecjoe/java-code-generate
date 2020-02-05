@@ -1,6 +1,7 @@
 package com.joe.code.common.tool;
 
 import com.joe.code.common.enums.BasicControlTypeEnum;
+import org.springframework.util.StringUtils;
 
 public abstract class AbstractMethodTemplate extends AbstractCodeTemplate {
 
@@ -18,7 +19,7 @@ public abstract class AbstractMethodTemplate extends AbstractCodeTemplate {
         this.basicControlTypeEnum = basicControlTypeEnum;
     }
 
-    protected abstract String getMethodHeader(BasicControlTypeEnum basicControlTypeEnum, String entityName);
+    protected abstract String getMethodHeader();
 
     public String getEntityName() {
         return entityName;
@@ -42,5 +43,14 @@ public abstract class AbstractMethodTemplate extends AbstractCodeTemplate {
 
     public void setBasicControlTypeEnum(BasicControlTypeEnum basicControlTypeEnum) {
         this.basicControlTypeEnum = basicControlTypeEnum;
+    }
+
+    protected String getFirstCharIsUpper(String str){
+
+        if(StringUtils.isEmpty(str)){
+            return "";
+        }
+
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }

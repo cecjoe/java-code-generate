@@ -27,49 +27,47 @@ public class ControlMethodTemplate extends AbstractMethodTemplate {
         }
 
         addNewLine(stringBuilder, 1, getBasicControlTypeEnum().getMapping());
-        addNewLine(stringBuilder, 1, getMethodHeader(getBasicControlTypeEnum(), getEntityName()));
-        stringBuilder.append(getCallServiceFunc(getBasicControlTypeEnum(), getEntityName()));
+        addNewLine(stringBuilder, 1, getMethodHeader());
+        stringBuilder.append(getCallServiceFunc());
         addNewLine(stringBuilder, 1, "}");
         forwardNextLine(stringBuilder);
         return stringBuilder.toString();
     }
 
     @Override
-    protected String getMethodHeader(BasicControlTypeEnum basicControlTypeEnum, String entityName) {
+    protected String getMethodHeader() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("public ResultObject ").append(getMethodNameByType(basicControlTypeEnum, entityName));
+        sb.append("public ResultObject ").append(getMethodNameByType(getBasicControlTypeEnum(), getEntityName()));
 
-        if(basicControlTypeEnum.getIsPath().equals(AvailableTypeEnum.YES.getIndex())){
+        if(getBasicControlTypeEnum().getIsPath().equals(AvailableTypeEnum.YES.getIndex())){
             sb.append("(@PathVariable(\"id\") Integer id)").append("{");
         } else {
-            if(basicControlTypeEnum.getCode().toLowerCase().indexOf(PAGE_LABEL) != -1){
+            if(getBasicControlTypeEnum().getCode().toLowerCase().indexOf(PAGE_LABEL) != -1){
                 addNewLine(sb, 0, "(@RequestParam(value = \"page\", defaultValue = \"1\", required = false) Integer pageNo,");
                 addNewLine(sb, 9, "@RequestParam(value = \"size\", defaultValue = \"10\", required = false) Integer size){");
             }else{
-                String paramContent = basicControlTypeEnum.getCode().substring(0, 1).toUpperCase()+basicControlTypeEnum.getCode().substring(1)+entityName+"Req";
+                String paramContent = getBasicControlTypeEnum().getCode().substring(0, 1).toUpperCase()+getBasicControlTypeEnum().getCode().substring(1)+getEntityName()+"Req";
                 sb.append("(@Valid @RequestBody ").append(paramContent).append(" req)").append("{");
             }
         }
 
-
         return sb.toString();
     }
 
-    private String getCallServiceFunc(BasicControlTypeEnum basicControlTypeEnum, String entityName){
+    private String getCallServiceFunc(){
 
         StringBuilder sb = new StringBuilder();
-
-        if(basicControlTypeEnum.getIsPath().equals(AvailableTypeEnum.YES.getIndex())){
-            addNewLine(sb, 2, getServiceNameByEntity(entityName) + "." + getMethodNameByType(basicControlTypeEnum, entityName) + "(id);");
+        if(getBasicControlTypeEnum().getIsPath().equals(AvailableTypeEnum.YES.getIndex())){
+            addNewLine(sb, 2, getServiceNameByEntity() + "." + getMethodNameByType(getBasicControlTypeEnum(), getEntityName()) + "(id);");
             addNewLine(sb, 2, "return ResultStatusEnum.SUCCESS.ok();");
         } else {
-            if(basicControlTypeEnum.getCode().toLowerCase().indexOf(PAGE_LABEL) != -1){
+            if(getBasicControlTypeEnum().getCode().toLowerCase().indexOf(PAGE_LABEL) != -1){
                 addNewLine(sb, 2, "Page page = new Page<>(pageNo, size);");
-                addNewLine(sb, 2, "List<" + entityName + "Rsp> list = " + getServiceNameByEntity(entityName) + ".getBaseMapper().selectByPage(page);");
+                addNewLine(sb, 2, "List<" + getEntityName() + "Rsp> list = " + getServiceNameByEntity() + ".getBaseMapper().selectByPage(page);");
                 addNewLine(sb, 2, "return ResultStatusEnum.SUCCESS.ok(list, page.getTotal());");
             }else{
-                addNewLine(sb, 2, getServiceNameByEntity(entityName) + "." + getMethodNameByType(basicControlTypeEnum, entityName) + "(req);");
+                addNewLine(sb, 2, getServiceNameByEntity() + "." + getMethodNameByType(getBasicControlTypeEnum(), getEntityName()) + "(req);");
                 addNewLine(sb, 2, "return ResultStatusEnum.SUCCESS.ok();");
             }
         }
@@ -77,9 +75,9 @@ public class ControlMethodTemplate extends AbstractMethodTemplate {
         return sb.toString();
     }
 
-    private String getServiceNameByEntity(String entityName){
+    private String getServiceNameByEntity(){
 
-        return entityName.substring(0,1).toLowerCase() + entityName.substring(1) + "Service";
+        return getEntityName().substring(0,1).toLowerCase() + getEntityName().substring(1) + "Service";
     }
 
     private String getMethodNameByType(BasicControlTypeEnum basicControlTypeEnum, String entityName){

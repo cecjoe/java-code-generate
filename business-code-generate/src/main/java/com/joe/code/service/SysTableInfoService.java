@@ -10,6 +10,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SysTableInfoService extends ServiceImpl<SysTableInfoMapper, SysTableInfo> {
 
-
+//    public void addSysTableInfo(AddTableInfoReq req){
+//
+//
+//    }
+//
+//    public void updateSysTableInfo(UpdateTableInfoReq req){
+//
+//
+//    }
+//
+//    public void deleteSysTableInfo(Integer id){
+//
+//
+//    }
 
 }
